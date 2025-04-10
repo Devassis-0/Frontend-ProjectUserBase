@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { cadastrarUsuario, listarUsuarios } from "./services/api";
 
 function App() {
   const [nome, setNome] = useState("");
@@ -10,8 +10,8 @@ function App() {
 
   const carregarUsuarios = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/usuarios/");
-      setUsuarios(res.data);
+      const data = await listarUsuarios();
+      setUsuarios(data);
     } catch (error) {
       console.error("Erro ao buscar usuários", error);
     }
@@ -24,7 +24,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/usuarios/", {
+      await cadastrarUsuario({
         nome,
         email,
         idade: parseInt(idade),
@@ -35,7 +35,7 @@ function App() {
       setIdade("");
       carregarUsuarios();
     } catch (err) {
-      setMensagem(err.response.data.detail || "Erro ao cadastrar");
+      setMensagem(err.response?.data?.detail || "Erro ao cadastrar");
     }
   };
 
